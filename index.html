@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OpsForge — Self-Service Automation Platform (Concept Wireframe)</title>
+<style>
+  :root{
+    --bg:#0e1525; --bg2:#131c30; --panel:#0f1830; --card:#142441;
+    --ink:#e8eef9; --muted:#93a3c4; --line:#243456;
+    --brand:#5b8cff; --brand2:#7c5cff; --accent:#22d3ee;
+    --green:#34d399; --amber:#fbbf24; --red:#fb7185; --violet:#a78bfa;
+    --chip:#1b2a4a; --shadow:0 10px 30px rgba(0,0,0,.35);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1200px 600px at 80% -10%,#1b2c52 0%,transparent 60%),
+               radial-gradient(900px 500px at -10% 10%,#241a4d 0%,transparent 55%),
+               var(--bg);
+    color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1320px;margin:0 auto;padding:0 22px}
+
+  /* ===== Top bar ===== */
+  header.top{position:sticky;top:0;z-index:40;backdrop-filter:blur(10px);
+    background:rgba(10,16,30,.82);border-bottom:1px solid var(--line)}
+  .topbar{display:flex;align-items:center;gap:18px;height:64px}
+  .logo{display:flex;align-items:center;gap:11px;font-weight:800;font-size:20px;letter-spacing:.3px}
+  .logo .mark{width:34px;height:34px;border-radius:9px;
+    background:linear-gradient(135deg,var(--brand),var(--brand2));
+    display:grid;place-items:center;box-shadow:0 4px 14px rgba(91,140,255,.5)}
+  .logo .mark svg{width:20px;height:20px}
+  .logo b{background:linear-gradient(90deg,#cfe0ff,#fff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  nav.main{display:flex;gap:6px;margin-left:14px;flex-wrap:wrap}
+  nav.main a{padding:8px 13px;border-radius:9px;color:var(--muted);font-size:14px;font-weight:600}
+  nav.main a:hover{color:#fff;background:var(--chip)}
+  .top-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+  .ribbon{font-size:11px;font-weight:800;letter-spacing:.6px;color:#0a0f1e;
+    background:linear-gradient(90deg,var(--accent),#67e8f9);padding:6px 11px;border-radius:999px}
+  .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#34507f,#5b8cff);
+    display:grid;place-items:center;font-weight:700;font-size:13px;border:1px solid var(--line)}
+
+  /* ===== Hero ===== */
+  .hero{padding:54px 0 30px}
+  .hero h1{font-size:46px;line-height:1.08;margin:0 0 14px;font-weight:800;letter-spacing:-.5px}
+  .hero h1 span{background:linear-gradient(90deg,var(--brand),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p.lead{font-size:18px;color:var(--muted);max-width:780px;margin:0 0 22px}
+  .pills{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px}
+  .pill{display:flex;align-items:center;gap:8px;background:var(--chip);border:1px solid var(--line);
+    padding:8px 13px;border-radius:999px;font-size:13px;color:#cdd9f2;font-weight:600}
+  .pill i{width:8px;height:8px;border-radius:50%;background:var(--green)}
+  .cta{display:flex;gap:12px;flex-wrap:wrap}
+  .btn{cursor:pointer;border:none;font-weight:700;font-size:14px;padding:12px 20px;border-radius:11px;
+    transition:.15s;display:inline-flex;align-items:center;gap:9px}
+  .btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 8px 22px rgba(91,140,255,.4)}
+  .btn.primary:hover{transform:translateY(-2px)}
+  .btn.ghost{background:transparent;color:#cfe0ff;border:1px solid var(--line)}
+  .btn.ghost:hover{background:var(--chip)}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:38px}
+  .stat{background:linear-gradient(180deg,var(--card),var(--panel));border:1px solid var(--line);
+    border-radius:var(--radius);padding:20px;position:relative;overflow:hidden}
+  .stat .num{font-size:34px;font-weight:800;color:#fff}
+  .stat .lbl{color:var(--muted);font-size:13px;margin-top:3px}
+  .stat::after{content:"";position:absolute;right:-30px;top:-30px;width:90px;height:90px;border-radius:50%;
+    background:radial-gradient(circle,rgba(91,140,255,.25),transparent 70%)}
+
+  /* ===== Section scaffolding ===== */
+  section{padding:46px 0;border-top:1px solid rgba(36,52,86,.5)}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:24px;flex-wrap:wrap}
+  .sec-head .kick{color:var(--accent);font-weight:800;font-size:12px;letter-spacing:1.4px;text-transform:uppercase}
+  .sec-head h2{font-size:30px;margin:6px 0 0;font-weight:800;letter-spacing:-.3px}
+  .sec-head p{color:var(--muted);margin:8px 0 0;max-width:680px}
+
+  /* ===== Lifecycle ===== */
+  .flow{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+  .flow .node{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;position:relative}
+  .flow .node .n{width:30px;height:30px;border-radius:8px;background:var(--chip);display:grid;place-items:center;
+    font-weight:800;color:var(--accent);margin-bottom:10px;border:1px solid var(--line)}
+  .flow .node h4{margin:0 0 5px;font-size:15px}
+  .flow .node p{margin:0;font-size:12.5px;color:var(--muted)}
+  .flow .node::after{content:"\2192";position:absolute;right:-12px;top:50%;transform:translateY(-50%);
+    color:var(--line);font-size:18px;z-index:2}
+  .flow .node:last-child::after{display:none}
+
+  /* ===== Catalog ===== */
+  .catalog{display:grid;grid-template-columns:248px 1fr;gap:22px}
+  .side{position:sticky;top:84px;align-self:start;background:var(--panel);border:1px solid var(--line);
+    border-radius:var(--radius);padding:12px;max-height:78vh;overflow:auto}
+  .side h5{margin:6px 8px 10px;font-size:11px;letter-spacing:1px;color:var(--muted);text-transform:uppercase}
+  .catnav button{width:100%;text-align:left;background:transparent;border:none;color:var(--muted);
+    padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;display:flex;
+    align-items:center;gap:9px;transition:.12s}
+  .catnav button .dot{width:9px;height:9px;border-radius:3px;flex:none}
+  .catnav button .cnt{margin-left:auto;font-size:11px;background:var(--chip);padding:2px 7px;border-radius:999px;color:#aab8d8}
+  .catnav button:hover{color:#fff;background:var(--chip)}
+  .catnav button.active{color:#fff;background:linear-gradient(90deg,rgba(91,140,255,.22),transparent);
+    box-shadow:inset 2px 0 0 var(--brand)}
+
+  .toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+  .search{flex:1;min-width:220px;display:flex;align-items:center;gap:9px;background:var(--panel);
+    border:1px solid var(--line);border-radius:11px;padding:10px 14px}
+  .search input{border:none;background:transparent;color:var(--ink);font-size:14px;width:100%;outline:none}
+  .search svg{width:16px;height:16px;opacity:.6}
+  .filters{display:flex;gap:8px;flex-wrap:wrap}
+  .fchip{cursor:pointer;background:var(--panel);border:1px solid var(--line);color:var(--muted);
+    padding:8px 13px;border-radius:999px;font-size:12.5px;font-weight:700;transition:.12s}
+  .fchip:hover{color:#fff}
+  .fchip.on{color:#fff;border-color:transparent}
+  .fchip.on[data-k="builtin"]{background:rgba(52,211,153,.2);box-shadow:inset 0 0 0 1px var(--green)}
+  .fchip.on[data-k="script"]{background:rgba(167,139,250,.2);box-shadow:inset 0 0 0 1px var(--violet)}
+  .fchip.on[data-k="low"]{background:rgba(52,211,153,.18);box-shadow:inset 0 0 0 1px var(--green)}
+  .fchip.on[data-k="medium"]{background:rgba(251,191,36,.18);box-shadow:inset 0 0 0 1px var(--amber)}
+  .fchip.on[data-k="high"]{background:rgba(251,113,133,.18);box-shadow:inset 0 0 0 1px var(--red)}
+
+  .count{color:var(--muted);font-size:13px;margin-left:auto}
+  .count b{color:#fff}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .cap{background:linear-gradient(180deg,var(--card),var(--panel));border:1px solid var(--line);
+    border-radius:13px;padding:15px;cursor:pointer;transition:.15s;position:relative;display:flex;flex-direction:column;gap:9px}
+  .cap:hover{transform:translateY(-3px);border-color:#36508a;box-shadow:var(--shadow)}
+  .cap .top{display:flex;align-items:center;gap:10px}
+  .cap .ic{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;font-size:18px;flex:none}
+  .cap .nm{font-weight:700;font-size:14.5px}
+  .cap .ds{color:var(--muted);font-size:12.5px;min-height:34px}
+  .cap .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
+  .tag{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:999px;border:1px solid var(--line);color:#b9c6e4}
+  .tag.builtin{color:var(--green);border-color:rgba(52,211,153,.4)}
+  .tag.script{color:var(--violet);border-color:rgba(167,139,250,.4)}
+  .tag.low{color:var(--green)} .tag.medium{color:var(--amber)} .tag.high{color:var(--red)}
+  .cap .cat-label{position:absolute;top:13px;right:13px;font-size:10px;color:var(--muted)}
+
+  /* ===== Generic feature cards ===== */
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .fcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+  .fcard .ic{width:42px;height:42px;border-radius:11px;background:var(--chip);display:grid;place-items:center;
+    font-size:20px;margin-bottom:12px;border:1px solid var(--line)}
+  .fcard h4{margin:0 0 7px;font-size:16px}
+  .fcard p{margin:0;color:var(--muted);font-size:13.5px}
+
+  /* ===== Architecture ===== */
+  .arch{display:flex;flex-direction:column;gap:12px}
+  .layer{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+    display:flex;align-items:center;gap:16px}
+  .layer .tag2{font-size:11px;font-weight:800;letter-spacing:.6px;color:var(--accent);width:120px;flex:none;text-transform:uppercase}
+  .layer .boxes{display:flex;gap:10px;flex-wrap:wrap}
+  .box{background:var(--panel);border:1px dashed var(--line);border-radius:9px;padding:9px 13px;font-size:12.5px;color:#ccd7f0;font-weight:600}
+  .layer.brandy{background:linear-gradient(90deg,rgba(91,140,255,.16),rgba(124,92,255,.1));border-color:#3a4f86}
+
+  /* ===== Roadmap ===== */
+  .road{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .phase{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;position:relative}
+  .phase .ph{font-size:12px;font-weight:800;letter-spacing:.8px;color:var(--accent);text-transform:uppercase}
+  .phase h4{margin:6px 0 12px;font-size:18px}
+  .phase ul{margin:0;padding-left:18px;color:var(--muted);font-size:13.5px}
+  .phase ul li{margin-bottom:7px}
+  .phase .when{position:absolute;top:18px;right:18px;font-size:11px;background:var(--chip);padding:4px 9px;border-radius:999px;color:#aab8d8}
+
+  /* ===== Governance bar ===== */
+  .govgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+
+  footer{padding:34px 0 60px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin-top:20px}
+  .foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+  .names{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .names span{background:var(--chip);border:1px solid var(--line);padding:5px 11px;border-radius:999px;font-size:12px}
+
+  /* ===== Modal ===== */
+  .overlay{position:fixed;inset:0;background:rgba(5,9,18,.72);backdrop-filter:blur(4px);z-index:80;
+    display:none;align-items:center;justify-content:center;padding:20px}
+  .overlay.show{display:flex}
+  .modal{background:var(--bg2);border:1px solid var(--line);border-radius:18px;max-width:640px;width:100%;
+    box-shadow:var(--shadow);overflow:hidden;animation:pop .18s ease}
+  @keyframes pop{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+  .modal .mh{padding:20px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px}
+  .modal .mh .ic{width:46px;height:46px;border-radius:11px;display:grid;place-items:center;font-size:22px;flex:none}
+  .modal .mh h3{margin:0;font-size:19px}
+  .modal .mh .sub{color:var(--muted);font-size:12.5px;margin-top:2px}
+  .modal .mh .x{margin-left:auto;cursor:pointer;color:var(--muted);font-size:24px;line-height:1;background:none;border:none}
+  .modal .mb{padding:20px 22px;max-height:60vh;overflow:auto}
+  .kv{display:grid;grid-template-columns:130px 1fr;gap:8px 14px;font-size:13.5px;margin-bottom:16px}
+  .kv .k{color:var(--muted)}
+  .field{margin-bottom:11px}
+  .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600}
+  .field input,.field select{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--ink);
+    border-radius:9px;padding:9px 12px;font-size:13.5px;outline:none}
+  .mfoot{padding:16px 22px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end}
+  .approve{font-size:12px;color:var(--amber);display:flex;align-items:center;gap:7px;margin-right:auto}
+
+  /* terminal */
+  .term{background:#070b14;border:1px solid var(--line);border-radius:10px;padding:14px;font-family:'Consolas',monospace;
+    font-size:12.5px;color:#c8d6f5;height:230px;overflow:auto;white-space:pre-wrap}
+  .term .ok{color:var(--green)} .term .warn{color:var(--amber)} .term .cmd{color:var(--accent)}
+  .pbar{height:6px;background:var(--chip);border-radius:999px;overflow:hidden;margin:12px 0}
+  .pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--accent));transition:width .3s}
+
+  @media(max-width:980px){
+    .catalog{grid-template-columns:1fr}.side{position:static;max-height:none}
+    .grid,.cards3,.road,.govgrid{grid-template-columns:1fr 1fr}
+    .stats{grid-template-columns:1fr 1fr}.flow{grid-template-columns:1fr 1fr}
+    nav.main{display:none}
+  }
+  @media(max-width:620px){.grid,.cards3,.road,.govgrid,.stats,.flow{grid-template-columns:1fr}
+    .hero h1{font-size:34px}.layer{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap topbar">
+    <div class="logo">
+      <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2l3 3-3 3-3-3 3-3zM5 9l3 3-3 3-3-3 3-3zM19 9l3 3-3 3-3-3 3-3zM12 16l3 3-3 3-3-3 3-3z"/></svg></span>
+      Ops<b>Forge</b>
+    </div>
+    <nav class="main">
+      <a href="#overview">Overview</a>
+      <a href="#how">How it works</a>
+      <a href="#catalog">Capability Catalog</a>
+      <a href="#hub">Automation Hub</a>
+      <a href="#arch">Architecture</a>
+      <a href="#gov">Governance</a>
+      <a href="#roadmap">Roadmap</a>
+    </nav>
+    <div class="top-right">
+      <span class="ribbon">CONCEPT · INTERACTIVE WIREFRAME</span>
+      <div class="avatar">SA</div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== HERO / OVERVIEW ===== -->
+<div class="wrap hero" id="overview">
+  <h1>One console to run <span>every operational task</span>.<br/>Self-service. Automated. Governed.</h1>
+  <p class="lead">OpsForge is a self-service platform and automation framework for system administrators and
+    production-support engineers. It ships with pre-packaged, tested actions for the most common tasks — and
+    acts as a secure container for any custom automation your teams build, test and certify.</p>
+  <div class="pills">
+    <span class="pill"><i></i> Pre-built &amp; tested actions</span>
+    <span class="pill"><i style="background:var(--violet)"></i> Bring-your-own scripts</span>
+    <span class="pill"><i style="background:var(--accent)"></i> RBAC + approvals + full audit</span>
+    <span class="pill"><i style="background:var(--amber)"></i> Dry-run &amp; blast-radius controls</span>
+  </div>
+  <div class="cta">
+    <button class="btn primary" onclick="document.getElementById('catalog').scrollIntoView()">
+      Explore the Capability Catalog
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </button>
+    <button class="btn ghost" onclick="document.getElementById('how').scrollIntoView()">See how it works</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="num" data-to="140">0</div><div class="lbl">Built-in actions envisioned</div></div>
+    <div class="stat"><div class="num" data-to="18">0</div><div class="lbl">Operational domains covered</div></div>
+    <div class="stat"><div class="num" data-to="8">0</div><div class="lbl">Initial tech stacks (piloted)</div></div>
+    <div class="stat"><div class="num" data-to="70" data-suffix="%">0</div><div class="lbl">Target reduction in manual toil</div></div>
+  </div>
+</div>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section id="how"><div class="wrap">
+  <div class="sec-head">
+    <div><div class="kick">The Automation Lifecycle</div>
+      <h2>From a manual runbook to a one-click, audited action</h2>
+      <p>Every automation — built-in or custom — flows through the same safe, governed pipeline before anyone can run it in production.</p>
+    </div>
+  </div>
+  <div class="flow">
+    <div class="node"><div class="n">1</div><h4>Author</h4><p>Pick a built-in action or submit a script/workflow with parameters &amp; metadata.</p></div>
+    <div class="node"><div class="n">2</div><h4>Sandbox Test</h4><p>Run in an isolated non-prod environment with mock targets and validations.</p></div>
+    <div class="node"><div class="n">3</div><h4>Certify</h4><p>Peer review, security scan and approval promote it to the catalog.</p></div>
+    <div class="node"><div class="n">4</div><h4>Publish</h4><p>Appears in the self-service catalog scoped by role, team and environment.</p></div>
+    <div class="node"><div class="n">5</div><h4>Run</h4><p>Engineer triggers with guardrails: dry-run, approvals, blast-radius limits.</p></div>
+    <div class="node"><div class="n">6</div><h4>Audit</h4><p>Every input, output and change captured as immutable evidence.</p></div>
+  </div>
+</div></section>
+
+<!-- ===== CAPABILITY CATALOG ===== -->
+<section id="catalog"><div class="wrap">
+  <div class="sec-head">
+    <div><div class="kick">Built-in Capabilities</div>
+      <h2>The Capability Catalog</h2>
+      <p>A curated, searchable library of pre-packaged, tested actions across the full sys-admin &amp; production-support remit. Click any card to see details and a simulated run.</p>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#9fb0d4" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+      <input id="q" type="text" placeholder="Search 140+ actions — e.g. restart, disk, password, cert, pod, backup…" />
+    </div>
+    <div class="filters" id="typeFilters">
+      <span class="fchip" data-f="type" data-k="builtin">Built-in</span>
+      <span class="fchip" data-f="type" data-k="script">Script-extensible</span>
+    </div>
+    <div class="filters" id="riskFilters">
+      <span class="fchip" data-f="risk" data-k="low">Low risk</span>
+      <span class="fchip" data-f="risk" data-k="medium">Medium</span>
+      <span class="fchip" data-f="risk" data-k="high">High</span>
+    </div>
+  </div>
+
+  <div class="catalog">
+    <aside class="side">
+      <h5>Operational Domains</h5>
+      <div class="catnav" id="catnav"></div>
+    </aside>
+    <div>
+      <div style="display:flex;align-items:center;margin-bottom:12px">
+        <div class="count">Showing <b id="shown">0</b> of <b id="total">0</b> actions</div>
+      </div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ===== AUTOMATION HUB ===== -->
+<section id="hub"><div class="wrap">
+  <div class="sec-head">
+    <div><div class="kick">The Framework</div>
+      <h2>Automation Hub — a container for every automation</h2>
+      <p>When a need isn't covered out-of-the-box, teams package it as a script or workflow. OpsForge wraps it with parameters, RBAC, testing and audit — turning tribal knowledge into a safe, reusable, shareable action.</p>
+    </div>
+  </div>
+  <div class="cards3">
+    <div class="fcard"><div class="ic">&#129513;</div><h4>Pluggable runners</h4><p>Execute Shell/PowerShell, Python, Ansible, Terraform, SQL and API calls through sandboxed, versioned runners.</p></div>
+    <div class="fcard"><div class="ic">&#128218;</div><h4>Parameterised templates</h4><p>Define typed inputs, validations, defaults and secrets references so actions are safe and self-documenting.</p></div>
+    <div class="fcard"><div class="ic">&#128272;</div><h4>Secrets &amp; identity</h4><p>No hard-coded credentials — pull from a vault at run-time with just-in-time, scoped access.</p></div>
+    <div class="fcard"><div class="ic">&#129302;</div><h4>Workflow composer</h4><p>Chain actions into multi-step runbooks with conditionals, approvals, pauses and rollback.</p></div>
+    <div class="fcard"><div class="ic">&#128467;&#65039;</div><h4>Versioning &amp; rollback</h4><p>Every automation is versioned; promote, deprecate or roll back with one click.</p></div>
+    <div class="fcard"><div class="ic">&#128202;</div><h4>Marketplace &amp; ratings</h4><p>Teams discover, reuse and rate certified automations — a flywheel that grows coverage over time.</p></div>
+  </div>
+</div></section>
+
+<!-- ===== ARCHITECTURE ===== -->
+<section id="arch"><div class="wrap">
+  <div class="sec-head">
+    <div><div class="kick">Conceptual Architecture</div>
+      <h2>How OpsForge fits together</h2>
+      <p>A layered, extensible design — a friendly self-service face on top of a governed orchestration and execution core that integrates with your existing estate.</p>
+    </div>
+  </div>
+  <div class="arch">
+    <div class="layer brandy"><div class="tag2">Experience</div><div class="boxes">
+      <span class="box">Self-service portal</span><span class="box">Action catalog &amp; search</span>
+      <span class="box">Dashboards &amp; status</span><span class="box">ChatOps (Slack/Teams)</span><span class="box">Mobile / on-call view</span></div></div>
+    <div class="layer"><div class="tag2">Orchestration</div><div class="boxes">
+      <span class="box">Workflow engine</span><span class="box">Approval &amp; scheduling</span>
+      <span class="box">Parameter &amp; policy engine</span><span class="box">Dry-run &amp; simulation</span><span class="box">Notifications</span></div></div>
+    <div class="layer"><div class="tag2">Execution</div><div class="boxes">
+      <span class="box">Sandboxed runners</span><span class="box">Shell / PowerShell</span><span class="box">Python</span>
+      <span class="box">Ansible</span><span class="box">Terraform</span><span class="box">SQL</span><span class="box">REST/API</span></div></div>
+    <div class="layer"><div class="tag2">Integrations</div><div class="boxes">
+      <span class="box">Cloud (AWS/Azure/GCP)</span><span class="box">Kubernetes</span><span class="box">Databases</span>
+      <span class="box">Monitoring/APM</span><span class="box">ITSM (ServiceNow)</span><span class="box">CI/CD</span><span class="box">IAM / AD</span></div></div>
+    <div class="layer"><div class="tag2">Governance</div><div class="boxes">
+      <span class="box">RBAC &amp; scoping</span><span class="box">Secrets vault</span><span class="box">Immutable audit log</span>
+      <span class="box">Policy-as-code</span><span class="box">Blast-radius limits</span><span class="box">Compliance evidence</span></div></div>
+  </div>
+</div></section>
+
+<!-- ===== GOVERNANCE ===== -->
+<section id="gov"><div class="wrap">
+  <div class="sec-head">
+    <div><div class="kick">Trust &amp; Safety</div>
+      <h2>Built for production from day one</h2>
+      <p>Self-service must never mean self-inflicted incidents. Guardrails are first-class.</p>
+    </div>
+  </div>
+  <div class="govgrid">
+    <div class="fcard"><div class="ic">&#128100;</div><h4>RBAC &amp; scoping</h4><p>Who can run what, where — by role, team and environment (dev/test/prod).</p></div>
+    <div class="fcard"><div class="ic">&#9989;</div><h4>Approvals &amp; JIT</h4><p>High-risk actions require maker-checker approval and just-in-time access.</p></div>
+    <div class="fcard"><div class="ic">&#128064;</div><h4>Dry-run &amp; preview</h4><p>See exactly what an action will change before it runs — every time.</p></div>
+    <div class="fcard"><div class="ic">&#128221;</div><h4>Immutable audit</h4><p>Tamper-evident log of every run, input, output and approver for compliance.</p></div>
+  </div>
+</div></section>
+
+<!-- ===== ROADMAP ===== -->
+<section id="roadmap"><div class="wrap">
+  <div class="sec-head">
+    <div><div class="kick">Phased Delivery</div>
+      <h2>A pragmatic path to value</h2>
+      <p>Start narrow and safe; prove value; expand coverage and stacks.</p>
+    </div>
+  </div>
+  <div class="road">
+    <div class="phase"><span class="when">0–3 mo</span><div class="ph">Phase 1 · MVP</div><h4>Foundation &amp; quick wins</h4>
+      <ul><li>Portal, catalog, RBAC &amp; audit core</li><li>20–25 high-value built-in actions</li>
+      <li>2 stacks (e.g. Linux + Kubernetes)</li><li>Dry-run &amp; approval workflow</li><li>1–2 pilot teams</li></ul></div>
+    <div class="phase"><span class="when">3–6 mo</span><div class="ph">Phase 2 · Framework</div><h4>Bring-your-own automation</h4>
+      <ul><li>Automation Hub: submit/test/certify</li><li>Pluggable runners &amp; secrets vault</li>
+      <li>Workflow composer (multi-step)</li><li>Expand to 5–6 stacks</li><li>ChatOps + scheduling</li></ul></div>
+    <div class="phase"><span class="when">6–12 mo</span><div class="ph">Phase 3 · Scale</div><h4>Intelligence &amp; reach</h4>
+      <ul><li>Auto-remediation from alerts</li><li>Marketplace, ratings &amp; reuse</li>
+      <li>AI assist: suggest &amp; summarise</li><li>Org-wide rollout &amp; SLOs</li><li>Cost &amp; capacity insights</li></ul></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap foot">
+  <div>
+    <div class="logo" style="font-size:17px"><span class="mark" style="width:28px;height:28px"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2l3 3-3 3-3-3 3-3zM12 16l3 3-3 3-3-3 3-3z"/></svg></span>Ops<b>Forge</b></div>
+    <div style="margin-top:8px">Concept wireframe for leadership review — not a production build. © 2026</div>
+    <div class="names">Working name: <span>OpsForge</span> alternatives: <span>Helmsman</span><span>OpsDeck</span><span>Switchboard</span><span>Conductor</span><span>Keystone Ops</span></div>
+  </div>
+  <button class="btn ghost" onclick="window.scrollTo({top:0,behavior:'smooth'})">Back to top &#8593;</button>
+</div></footer>
+
+<!-- ===== Detail / Run modal ===== -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+/* ============ DATA MODEL ============ */
+const CATS = [
+  {id:"incident",  name:"Incident Response & Triage", color:"#fb7185", icon:"🚨"},
+  {id:"host",      name:"Server & Host Management",   color:"#5b8cff", icon:"🖥️"},
+  {id:"storage",   name:"Storage & Disk",             color:"#22d3ee", icon:"💾"},
+  {id:"service",   name:"Service & App Ops",          color:"#34d399", icon:"⚙️"},
+  {id:"logs",      name:"Logs & Diagnostics",         color:"#a78bfa", icon:"📜"},
+  {id:"db",        name:"Database Operations",        color:"#f59e0b", icon:"🗄️"},
+  {id:"network",   name:"Network & Connectivity",     color:"#38bdf8", icon:"🌐"},
+  {id:"iam",       name:"Identity & Access",          color:"#f472b6", icon:"🔑"},
+  {id:"certs",     name:"Certificates & Secrets",     color:"#fbbf24", icon:"🔏"},
+  {id:"backup",    name:"Backup & Recovery",          color:"#4ade80", icon:"🛟"},
+  {id:"deploy",    name:"Deployment & Release",       color:"#818cf8", icon:"🚀"},
+  {id:"cloud",     name:"Cloud Resources",            color:"#60a5fa", icon:"☁️"},
+  {id:"k8s",       name:"Containers & Kubernetes",    color:"#2dd4bf", icon:"🧱"},
+  {id:"monitor",   name:"Monitoring & Observability", color:"#c084fc", icon:"📈"},
+  {id:"jobs",      name:"Jobs, Batch & Messaging",    color:"#fb923c", icon:"⏱️"},
+  {id:"security",  name:"Security & Compliance",      color:"#f87171", icon:"🛡️"},
+  {id:"capacity",  name:"Capacity & Cost",            color:"#34d399", icon:"💰"},
+  {id:"knowledge", name:"Knowledge & Runbooks",       color:"#93c5fd", icon:"📚"},
+];
+
+function C(cat,nm,ds,type,risk,stacks,approval){return {cat,nm,ds,type,risk,stacks,approval};}
+const CAPS = [
+  // Incident
+  C("incident","Acknowledge / triage alert","Ack an alert, attach context and assign an owner.","builtin","low",["Any"],false),
+  C("incident","Open incident bridge","Spin up a war-room channel & invite responders.","builtin","low",["Slack","Teams"],false),
+  C("incident","Run guided runbook","Execute a step-by-step remediation runbook with checks.","builtin","medium",["Any"],false),
+  C("incident","Auto-remediate (alert-driven)","Trigger a certified fix automatically from an alert.","builtin","high",["Any"],true),
+  C("incident","Capture diagnostics bundle","Collect logs, metrics & config snapshot for RCA.","builtin","low",["Linux","Windows","K8s"],false),
+  C("incident","Escalate / page on-call","Page the next tier with full context.","builtin","low",["PagerDuty","Opsgenie"],false),
+  C("incident","Post-incident timeline","Auto-build a timeline & evidence pack for the review.","builtin","low",["Any"],false),
+  // Host
+  C("host","Health check (CPU/mem/disk)","One-click vitals snapshot for a host or group.","builtin","low",["Linux","Windows"],false),
+  C("host","Restart service","Safely stop/start a system service with verification.","builtin","medium",["Linux","Windows"],false),
+  C("host","Kill runaway process","Identify and terminate a high-CPU/leaking process.","builtin","medium",["Linux","Windows"],true),
+  C("host","Reboot host (orchestrated)","Drain, reboot and validate return-to-service.","builtin","high",["Linux","Windows"],true),
+  C("host","Apply OS patches","Patch within a window with pre/post checks.","script","high",["Linux","Windows"],true),
+  C("host","Sync system time (NTP)","Correct clock drift across hosts.","builtin","low",["Linux","Windows"],false),
+  C("host","Check & fix file permissions","Audit and remediate ownership/permission drift.","script","medium",["Linux"],true),
+  // Storage
+  C("storage","Disk space report","Top consumers by mount, directory and file.","builtin","low",["Linux","Windows"],false),
+  C("storage","Clean temp & old logs","Reclaim space using safe, allow-listed paths.","builtin","medium",["Linux","Windows"],true),
+  C("storage","Rotate / compress logs","Force log rotation and archive old files.","builtin","low",["Linux"],false),
+  C("storage","Expand volume","Grow a filesystem / cloud volume online.","script","high",["AWS","Azure","Linux"],true),
+  C("storage","Archive to object storage","Move cold data to S3/Blob with manifest.","script","medium",["AWS","Azure"],true),
+  C("storage","Inode / mount check","Detect inode exhaustion and stale mounts.","builtin","low",["Linux"],false),
+  // Service / App
+  C("service","Service status overview","Live status of app services & dependencies.","builtin","low",["Any"],false),
+  C("service","Reload configuration","Hot-reload config without downtime.","builtin","medium",["Nginx","Apache","Tomcat"],false),
+  C("service","Flush application cache","Clear or warm a cache (Redis/app-level).","builtin","medium",["Redis","Java",".NET"],true),
+  C("service","Toggle feature flag","Enable/disable a flag for a cohort.","builtin","medium",["LaunchDarkly","Custom"],true),
+  C("service","Reset connection pool","Recycle DB/HTTP connection pools.","script","medium",["Java",".NET","Node"],true),
+  C("service","Restart app (rolling)","Rolling restart preserving availability.","builtin","medium",["K8s","Tomcat"],true),
+  // Logs
+  C("logs","Search logs","Query centralised logs by service/time/keyword.","builtin","low",["Splunk","ELK","Datadog"],false),
+  C("logs","Tail live logs","Stream logs for a host/pod in real time.","builtin","low",["Linux","K8s"],false),
+  C("logs","Error-spike detection","Surface anomalous error patterns automatically.","builtin","low",["ELK","Datadog"],false),
+  C("logs","Export log bundle","Download a time-boxed log archive.","builtin","low",["Any"],false),
+  C("logs","Audit-log lookup","Who did what, when — across the estate.","builtin","low",["Any"],false),
+  // DB
+  C("db","Connection & replica health","Check connectivity, sessions and replication lag.","builtin","low",["MySQL","PostgreSQL","Oracle","MSSQL"],false),
+  C("db","Slow-query analysis","Top slow queries with explain plans.","builtin","low",["MySQL","PostgreSQL","Oracle"],false),
+  C("db","Kill blocking session","Identify and end a blocking/locking session.","builtin","high",["MySQL","PostgreSQL","Oracle","MSSQL"],true),
+  C("db","Run approved query","Execute a vetted, read-only or templated query.","script","high",["MySQL","PostgreSQL","MSSQL"],true),
+  C("db","Rebuild / reorg index","Maintenance to restore query performance.","script","medium",["MSSQL","Oracle"],true),
+  C("db","Backup database (on-demand)","Trigger a verified backup snapshot.","builtin","medium",["MySQL","PostgreSQL","MSSQL"],true),
+  C("db","Manage users & grants","Provision DB users / adjust privileges.","script","high",["MySQL","PostgreSQL"],true),
+  // Network
+  C("network","Connectivity test","Ping, traceroute and port-reachability check.","builtin","low",["Any"],false),
+  C("network","DNS lookup / flush","Resolve records and flush caches.","builtin","low",["Linux","Windows"],false),
+  C("network","SSL/TLS endpoint check","Validate chain, ciphers and expiry.","builtin","low",["Any"],false),
+  C("network","Load-balancer pool status","View/drain/enable backend members.","script","high",["AWS","Nginx","F5"],true),
+  C("network","Firewall / security-group view","Inspect rules and exposed ports.","builtin","medium",["AWS","Azure","Linux"],false),
+  C("network","Latency / synthetic probe","Run a synthetic check from a region.","builtin","low",["Any"],false),
+  // IAM
+  C("iam","Reset password","Self-service reset / admin reset with policy.","builtin","medium",["AD","Okta","Linux"],false),
+  C("iam","Unlock account","Unlock a locked-out user account.","builtin","low",["AD","Okta"],false),
+  C("iam","Provision / deprovision user","Create or offboard an account & access.","script","high",["AD","Okta"],true),
+  C("iam","Grant temporary access (JIT)","Time-boxed privileged access with approval.","builtin","high",["AWS","Linux","AD"],true),
+  C("iam","Rotate SSH keys","Issue/rotate keys for users or services.","script","high",["Linux"],true),
+  C("iam","Group membership change","Add/remove from a security group.","builtin","medium",["AD","Okta"],true),
+  C("iam","Access review export","Generate an entitlements report for review.","builtin","low",["AD","AWS"],false),
+  // Certs & secrets
+  C("certs","Certificate inventory","Discover certs and flag upcoming expiries.","builtin","low",["Any"],false),
+  C("certs","Renew / rotate certificate","Issue and deploy a renewed certificate.","script","high",["Nginx","K8s","AWS"],true),
+  C("certs","Rotate secret / API key","Rotate a credential and update consumers.","script","high",["Vault","AWS"],true),
+  C("certs","Vault read (scoped)","Fetch a secret just-in-time, fully audited.","builtin","medium",["Vault"],true),
+  // Backup
+  C("backup","Backup status dashboard","Last-good, size and success across jobs.","builtin","low",["Any"],false),
+  C("backup","Trigger backup","On-demand backup of a target system.","builtin","medium",["Linux","DB","AWS"],true),
+  C("backup","Restore / test restore","Restore to a sandbox to verify recoverability.","script","high",["DB","Linux","AWS"],true),
+  C("backup","Snapshot management","Create/prune cloud or VM snapshots.","builtin","medium",["AWS","Azure","VMware"],true),
+  C("backup","DR drill runbook","Orchestrate a disaster-recovery rehearsal.","script","high",["AWS","Azure"],true),
+  // Deploy
+  C("deploy","Deployment status","Current versions across environments.","builtin","low",["Jenkins","GitHub","ArgoCD"],false),
+  C("deploy","Trigger deploy","Kick off a pipeline to a chosen environment.","script","high",["Jenkins","GitHub"],true),
+  C("deploy","Rollback release","Revert to the previous known-good version.","builtin","high",["K8s","Jenkins"],true),
+  C("deploy","Canary / blue-green switch","Shift traffic between versions safely.","script","high",["K8s","AWS"],true),
+  C("deploy","Change-freeze status","Check freeze windows before acting.","builtin","low",["ServiceNow"],false),
+  // Cloud
+  C("cloud","Start / stop instance","Power instances on/off on schedule or demand.","builtin","medium",["AWS","Azure","GCP"],true),
+  C("cloud","Resize / right-size","Change instance type with guardrails.","script","high",["AWS","Azure","GCP"],true),
+  C("cloud","Autoscaling adjust","Tune min/max/desired capacity.","script","high",["AWS","Azure"],true),
+  C("cloud","Find orphaned resources","Detect unused disks, IPs, snapshots.","builtin","low",["AWS","Azure","GCP"],false),
+  C("cloud","Tagging compliance fix","Apply required tags to resources.","script","medium",["AWS","Azure"],true),
+  C("cloud","Cost anomaly report","Spot spend spikes by service/team.","builtin","low",["AWS","Azure","GCP"],false),
+  // K8s
+  C("k8s","Pod status & describe","Inspect pods, events and restarts.","builtin","low",["K8s"],false),
+  C("k8s","Restart deployment","Roll a deployment to clear bad state.","builtin","medium",["K8s"],true),
+  C("k8s","Scale replicas","Scale a workload up or down.","builtin","medium",["K8s"],true),
+  C("k8s","Rollout / undo rollout","Promote or revert a rollout.","builtin","high",["K8s"],true),
+  C("k8s","Cordon / drain node","Safely evict workloads from a node.","script","high",["K8s"],true),
+  C("k8s","Pod logs / exec","Fetch logs or run a diagnostic command.","builtin","medium",["K8s"],true),
+  C("k8s","Resource quota check","Review namespace limits & usage.","builtin","low",["K8s"],false),
+  // Monitoring
+  C("monitor","Service health scorecard","Composite health across signals.","builtin","low",["Prometheus","Datadog"],false),
+  C("monitor","Silence / create alert","Mute noisy alerts or add a new rule.","builtin","medium",["Prometheus","Datadog"],true),
+  C("monitor","SLO / error-budget view","Track burn rate against objectives.","builtin","low",["Any"],false),
+  C("monitor","Trace lookup","Find a distributed trace by id/latency.","builtin","low",["Jaeger","Datadog"],false),
+  C("monitor","Synthetic test toggle","Enable/disable synthetic monitors.","builtin","low",["Datadog","Pingdom"],false),
+  // Jobs
+  C("jobs","Scheduled job status","See cron/scheduler runs & failures.","builtin","low",["Linux","K8s","Airflow"],false),
+  C("jobs","Rerun / retry failed job","Re-trigger a failed batch job.","builtin","medium",["Airflow","K8s"],true),
+  C("jobs","Queue depth & lag","Inspect MQ/Kafka backlog & consumer lag.","builtin","low",["Kafka","RabbitMQ"],false),
+  C("jobs","Replay / purge DLQ","Reprocess or clear a dead-letter queue.","script","high",["Kafka","SQS"],true),
+  C("jobs","Pause / resume pipeline","Hold or release a data pipeline.","builtin","medium",["Airflow"],true),
+  // Security
+  C("security","Vulnerability scan","On-demand scan of a host or image.","script","medium",["Linux","Docker"],true),
+  C("security","Patch-compliance report","Show missing patches across fleet.","builtin","low",["Linux","Windows"],false),
+  C("security","CIS benchmark check","Assess hardening against CIS controls.","script","medium",["Linux","K8s"],false),
+  C("security","Exposed-port / surface scan","Detect unexpected open ports.","builtin","medium",["AWS","Linux"],false),
+  C("security","IOC / threat lookup","Check an indicator against intel feeds.","builtin","low",["Any"],false),
+  C("security","Quarantine host","Isolate a compromised host from network.","script","high",["AWS","Linux"],true),
+  // Capacity & cost
+  C("capacity","Capacity dashboard","Headroom across compute, memory, storage.","builtin","low",["Any"],false),
+  C("capacity","Forecast resource growth","Project usage trends and breach dates.","builtin","low",["Any"],false),
+  C("capacity","Right-sizing recommendations","Suggest cheaper/safer instance sizing.","builtin","low",["AWS","Azure"],false),
+  C("capacity","Idle-resource reclaim","Flag & power down idle resources.","script","medium",["AWS","Azure"],true),
+  // Knowledge
+  C("knowledge","Runbook library","Browse and launch documented runbooks.","builtin","low",["Any"],false),
+  C("knowledge","Known-error database","Search known issues & proven fixes.","builtin","low",["Any"],false),
+  C("knowledge","SOP / checklist catalog","Standard operating procedures on demand.","builtin","low",["Any"],false),
+  C("knowledge","Submit new automation","Propose a script/workflow to the Hub.","builtin","low",["Any"],false),
+];
+
+/* ============ STATE ============ */
+let activeCat = "all";
+const filters = {type:new Set(), risk:new Set()};
+let query = "";
+
+/* ============ RENDER: category nav ============ */
+const catnav = document.getElementById('catnav');
+function countFor(id){return id==="all"?CAPS.length:CAPS.filter(c=>c.cat===id).length;}
+function buildNav(){
+  let html = `<button data-c="all" class="active"><span class="dot" style="background:linear-gradient(135deg,var(--brand),var(--brand2))"></span>All domains<span class="cnt">${CAPS.length}</span></button>`;
+  CATS.forEach(cat=>{
+    html += `<button data-c="${cat.id}"><span class="dot" style="background:${cat.color}"></span>${cat.name}<span class="cnt">${countFor(cat.id)}</span></button>`;
+  });
+  catnav.innerHTML = html;
+  catnav.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    activeCat=b.dataset.c;
+    catnav.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); render();
+  });
+}
+
+/* ============ RENDER: cards ============ */
+const grid = document.getElementById('grid');
+function catOf(id){return CATS.find(c=>c.id===id);}
+function matches(c){
+  if(activeCat!=="all" && c.cat!==activeCat) return false;
+  if(filters.type.size && !filters.type.has(c.type)) return false;
+  if(filters.risk.size && !filters.risk.has(c.risk)) return false;
+  if(query){
+    const hay=(c.nm+" "+c.ds+" "+c.stacks.join(" ")+" "+catOf(c.cat).name).toLowerCase();
+    if(!hay.includes(query)) return false;
+  }
+  return true;
+}
+function render(){
+  const list = CAPS.filter(matches);
+  grid.innerHTML = list.map((c,i)=>{
+    const cat=catOf(c.cat);
+    const tagType = c.type==="builtin"?`<span class="tag builtin">Built-in</span>`:`<span class="tag script">Script</span>`;
+    const tagRisk = `<span class="tag ${c.risk}">${c.risk[0].toUpperCase()+c.risk.slice(1)} risk</span>`;
+    const appr = c.approval?`<span class="tag" style="color:var(--amber);border-color:rgba(251,191,36,.4)">Approval</span>`:"";
+    const stackTags = c.stacks.slice(0,2).map(s=>`<span class="tag">${s}</span>`).join("");
+    return `<div class="cap" data-idx="${CAPS.indexOf(c)}">
+      <span class="cat-label">${cat.name}</span>
+      <div class="top"><div class="ic" style="background:${cat.color}22;border:1px solid ${cat.color}55">${cat.icon}</div>
+        <div class="nm">${c.nm}</div></div>
+      <div class="ds">${c.ds}</div>
+      <div class="tags">${tagType}${tagRisk}${appr}${stackTags}</div>
+    </div>`;
+  }).join("") || `<div style="color:var(--muted);padding:30px">No actions match your filters. Try clearing the search.</div>`;
+  document.getElementById('shown').textContent=list.length;
+  document.getElementById('total').textContent=CAPS.length;
+  grid.querySelectorAll('.cap').forEach(el=>el.onclick=()=>openModal(+el.dataset.idx));
+}
+
+/* ============ filters & search ============ */
+document.querySelectorAll('.fchip').forEach(ch=>{
+  ch.onclick=()=>{
+    const f=ch.dataset.f,k=ch.dataset.k;
+    if(filters[f].has(k)){filters[f].delete(k);ch.classList.remove('on');}
+    else{filters[f].add(k);ch.classList.add('on');}
+    render();
+  };
+});
+document.getElementById('q').addEventListener('input',e=>{query=e.target.value.trim().toLowerCase();render();});
+
+/* ============ Modal: detail + simulated run ============ */
+const overlay=document.getElementById('overlay'), modal=document.getElementById('modal');
+function openModal(idx){
+  const c=CAPS[idx], cat=catOf(c.cat);
+  modal.innerHTML=`
+    <div class="mh"><div class="ic" style="background:${cat.color}22;border:1px solid ${cat.color}55">${cat.icon}</div>
+      <div><h3>${c.nm}</h3><div class="sub">${cat.name}</div></div>
+      <button class="x" onclick="closeModal()">&times;</button></div>
+    <div class="mb">
+      <p style="margin-top:0;color:var(--muted)">${c.ds}</p>
+      <div class="kv">
+        <div class="k">Type</div><div>${c.type==="builtin"?"Pre-packaged & tested (built-in)":"Script-extensible via Automation Hub"}</div>
+        <div class="k">Risk level</div><div style="text-transform:capitalize">${c.risk}</div>
+        <div class="k">Approval</div><div>${c.approval?"Required (maker-checker)":"Not required"}</div>
+        <div class="k">Tech stacks</div><div>${c.stacks.join(", ")}</div>
+        <div class="k">Audit</div><div>Full input/output capture · immutable log</div>
+      </div>
+      <div style="font-weight:700;margin-bottom:8px">Parameters (example)</div>
+      <div class="field"><label>Target environment</label>
+        <select><option>dev</option><option>test</option><option selected>prod</option></select></div>
+      <div class="field"><label>Target host / resource</label><input value="app-node-07.prod" /></div>
+      <div class="field"><label>Reason / change ref</label><input placeholder="e.g. INC-10472 — high memory" /></div>
+      <div id="runArea"></div>
+    </div>
+    <div class="mfoot">
+      ${c.approval?`<span class="approve">&#9888;&#65039; This action would require approval before running in prod.</span>`:`<span class="approve" style="color:var(--green)">&#10003; Safe to self-serve with dry-run.</span>`}
+      <button class="btn ghost" onclick="closeModal()">Close</button>
+      <button class="btn primary" id="runBtn">Simulate run</button>
+    </div>`;
+  overlay.classList.add('show');
+  document.getElementById('runBtn').onclick=()=>simulateRun(c);
+}
+function closeModal(){overlay.classList.remove('show');}
+overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==="Escape")closeModal();});
+
+function simulateRun(c){
+  const area=document.getElementById('runArea');
+  area.innerHTML=`<div class="pbar"><i id="pb"></i></div><div class="term" id="term"></div>`;
+  const term=document.getElementById('term'), pb=document.getElementById('pb');
+  const steps=[
+    {t:`$ opsforge run "${c.nm.toLowerCase().replace(/[^a-z0-9]+/g,'-')}" --env prod`,cls:'cmd'},
+    {t:`[1/6] Validating parameters & RBAC… ` , ok:'OK'},
+    {t:`[2/6] Resolving target & secrets (just-in-time)… `, ok:'OK'},
+    {t:c.approval?`[3/6] Approval required → simulated approver: j.lee ` :`[3/6] Approval not required for this action `, ok:c.approval?'APPROVED':'SKIP', warn:c.approval},
+    {t:`[4/6] Dry-run preview of changes… `, ok:'OK'},
+    {t:`[5/6] Executing action with guardrails… `, ok:'OK'},
+    {t:`[6/6] Verifying health & writing audit record… `, ok:'OK'},
+    {t:`\u2714 Completed in 4.2s · audit id AUD-${Math.floor(Math.random()*900000+100000)} · evidence captured`, cls:'ok'}
+  ];
+  let i=0; term.textContent="";
+  document.getElementById('runBtn').disabled=true;
+  (function next(){
+    if(i>=steps.length){document.getElementById('runBtn').disabled=false;return;}
+    const s=steps[i];
+    const span=document.createElement('div');
+    if(s.cls)span.className=s.cls;
+    span.textContent=s.t+(s.ok?(s.warn?` [${s.ok}]`:` [${s.ok}]`):"");
+    if(s.ok && !s.cls){span.innerHTML=`${s.t}<span class="${s.warn?'warn':'ok'}">[${s.ok}]</span>`;}
+    term.appendChild(span); term.scrollTop=term.scrollHeight;
+    pb.style.width=Math.round(((i+1)/steps.length)*100)+"%";
+    i++; setTimeout(next, s.cls==='cmd'?350:520);
+  })();
+}
+
+/* ============ counters ============ */
+function animateCounters(){
+  document.querySelectorAll('.stat .num').forEach(el=>{
+    const to=+el.dataset.to, suf=el.dataset.suffix||"";let n=0;
+    const step=Math.max(1,Math.round(to/40));
+    const t=setInterval(()=>{n+=step;if(n>=to){n=to;clearInterval(t);}el.textContent=n+suf;},28);
+  });
+}
+
+/* ============ init ============ */
+buildNav(); render(); animateCounters();
+</script>
+</body>
+</html>
